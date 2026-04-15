@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Papers & Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --surface: #f7f7f5;
+    --border: #e8e8e4;
+    --text: #111111;
+    --muted: #888884;
+    --accent: #1a1a1a;
+    --tag-bg: #f0f0ec;
+    --hover-line: #111111;
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 300;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Header ── */
+  header {
+    padding: 80px 0 60px;
+    border-bottom: 1px solid var(--border);
+    max-width: 860px;
+    margin: 0 auto;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  .site-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  .header-desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 480px;
+  }
+
+  /* ── Controls ── */
+  .controls {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 40px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .count-label {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  #search {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--text);
+    width: 220px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  #search::placeholder { color: var(--muted); }
+  #search:focus { border-color: var(--accent); }
+
+  /* ── List ── */
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 40px 120px;
+  }
+
+  #paper-list {
+    margin-top: 24px;
+  }
+
+  .paper-item {
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    align-items: start;
+    gap: 0 20px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+
+  .paper-item::before {
+    content: '';
+    position: absolute;
+    left: -40px;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: var(--hover-line);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.2s ease;
+  }
+
+  .paper-item:hover::before { transform: scaleY(1); }
+
+  .paper-num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    padding-top: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .paper-body {}
+
+  .paper-title {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    font-weight: 400;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    transition: color 0.15s;
+  }
+
+  .paper-item:hover .paper-title {
+    color: var(--accent);
+  }
+
+  .paper-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .paper-filename {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .paper-tag {
+    background: var(--tag-bg);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+
+  .paper-arrow {
+    font-size: 18px;
+    color: var(--muted);
+    padding-top: 2px;
+    transition: transform 0.2s, color 0.2s;
+  }
+  .paper-item:hover .paper-arrow {
+    transform: translate(3px, -2px);
+    color: var(--accent);
+  }
+
+  /* ── Empty state ── */
+  .empty-state {
+    text-align: center;
+    padding: 80px 0;
+    color: var(--muted);
+    font-size: 14px;
+    display: none;
+  }
+
+  /* ── Footer ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 40px;
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-note {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .footer-note a {
+    color: var(--muted);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* ── How-to box ── */
+  .howto {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin-top: 48px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--muted);
+  }
+
+  .howto strong {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text);
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .howto code {
+    font-family: var(--mono);
+    background: var(--border);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+    color: var(--text);
+  }
+
+  /* ── Animations ── */
+  .paper-item {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeUp 0.35s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    header, .controls, main, footer { padding-left: 20px; padding-right: 20px; }
+    header { padding-top: 48px; padding-bottom: 40px; }
+    .paper-item { grid-template-columns: 36px 1fr auto; gap: 0 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="site-label">Research Index</p>
+  <h1>Papers &amp; <em>Reading Notes</em></h1>
+  <p class="header-desc">A personal archive of annotated papers and HTML reading notes. Click any entry to open the full page.</p>
+</header>
+
+<div class="controls">
+  <span class="count-label" id="count-label">— papers</span>
+  <input type="text" id="search" placeholder="Search titles…" autocomplete="off" />
+</div>
+
+<main>
+  <div id="paper-list"></div>
+  <div class="empty-state" id="empty-state">No papers match your search.</div>
+
+  <div class="howto">
+    <strong>How to add a new paper</strong>
+    把新的 <code>.html</code> 文件放入这个仓库的同一目录下，然后在下方的 <code>papers</code> 数组里添加一条记录：
+    <br><br>
+    <code>{ file: "YOUR_FILE.html", title: "论文标题", tags: ["tag"] }</code>
+    <br><br>
+    提交（push）后，GitHub Pages 会自动更新。无需任何构建工具。
+  </div>
+</main>
+
+<footer>
+  <span class="footer-note">Hosted on <a href="https://pages.github.com" target="_blank">GitHub Pages</a></span>
+  <span class="footer-note" id="footer-date"></span>
+</footer>
+
+<script>
+  // ─────────────────────────────────────────
+  // ✏️  在这里添加你的论文，每次加新HTML只需
+  //    在数组里追加一个对象即可
+  // ─────────────────────────────────────────
+  const papers = [
+    {
+      file: "DO_LLMS_BENEFIT_FROM_THEIR_OWN_WORDS.html",
+      title: "Do LLMs Benefit from Their Own Words?",
+      tags: ["LLM", "批注版"]
+    },
+    // 示例（删除后替换成你自己的）：
+    // {
+    //   file: "ANOTHER_PAPER.html",
+    //   title: "Another Interesting Paper",
+    //   tags: ["NLP"]
+    // },
+  ];
+  // ─────────────────────────────────────────
+
+  const list = document.getElementById('paper-list');
+  const countLabel = document.getElementById('count-label');
+  const emptyState = document.getElementById('empty-state');
+  const searchInput = document.getElementById('search');
+
+  document.getElementById('footer-date').textContent =
+    'Updated ' + new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  function render(items) {
+    list.innerHTML = '';
+    if (items.length === 0) {
+      emptyState.style.display = 'block';
+    } else {
+      emptyState.style.display = 'none';
+    }
+    items.forEach((p, i) => {
+      const a = document.createElement('a');
+      a.className = 'paper-item';
+      a.href = p.file;
+      a.style.animationDelay = (i * 40) + 'ms';
+
+      const tags = (p.tags || []).map(t =>
+        `<span class="paper-tag">${t}</span>`
+      ).join('');
+
+      a.innerHTML = `
+        <span class="paper-num">${String(i + 1).padStart(2, '0')}</span>
+        <div class="paper-body">
+          <div class="paper-title">${p.title}</div>
+          <div class="paper-meta">
+            <span class="paper-filename">${p.file}</span>
+            ${tags}
+          </div>
+        </div>
+        <span class="paper-arrow">↗</span>
+      `;
+      list.appendChild(a);
+    });
+    countLabel.textContent = `${items.length} paper${items.length !== 1 ? 's' : ''}`;
+  }
+
+  render(papers);
+
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.trim().toLowerCase();
+    if (!q) { render(papers); return; }
+    const filtered = papers.filter(p =>
+      p.title.toLowerCase().includes(q) ||
+      p.file.toLowerCase().includes(q) ||
+      (p.tags || []).some(t => t.toLowerCase().includes(q))
+    );
+    render(filtered);
+  });
+</script>
+</body>
+</html>
