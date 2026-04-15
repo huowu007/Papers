@@ -13,7 +13,7 @@
     --surface: #f7f7f5;
     --border: #e8e8e4;
     --text: #111111;
-    --muted: #888884;
+    --muted: #6b6b67;
     --accent: #1a1a1a;
     --tag-bg: #f0f0ec;
     --hover-line: #111111;
@@ -101,7 +101,7 @@
     font-family: var(--sans);
     font-size: 13px;
     color: var(--text);
-    width: 220px;
+    width: clamp(160px, 30vw, 220px);
     outline: none;
     transition: border-color 0.2s;
   }
@@ -159,7 +159,7 @@
 
   .paper-title {
     font-family: var(--serif);
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     font-weight: 400;
     line-height: 1.4;
     margin-bottom: 8px;
