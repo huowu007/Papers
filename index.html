@@ -293,7 +293,7 @@
 </main>
 
 <footer>
-  <span class="footer-note">Hosted on <a href="https://pages.github.com" target="_blank">GitHub Pages</a></span>
+  <span class="footer-note">Hosted on <a href="https://pages.github.com" target="_blank">GitHub</a></span>
   <span class="footer-note" id="footer-date"></span>
 </footer>
 
@@ -321,8 +321,14 @@
   const emptyState = document.getElementById('empty-state');
   const searchInput = document.getElementById('search');
 
-  document.getElementById('footer-date').textContent =
-    'Updated ' + new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+fetch('https://api.github.com/repos/huowu007/Papers/commits?path=index.html&per_page=1')
+  .then(r => r.json())
+  .then(data => {
+    const commitDate = new Date(data[0].commit.author.date);
+    const days = Math.floor((Date.now() - commitDate) / 86400000);
+    const rel = days === 0 ? 'today' : days === 1 ? 'yesterday' : `${days} days ago`;
+    document.getElementById('footer-date').textContent = `Updated ${rel}`;
+  });
 
   function render(items) {
     list.innerHTML = '';
