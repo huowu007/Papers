@@ -325,8 +325,9 @@ fetch('https://api.github.com/repos/huowu007/Papers/commits?path=index.html&per_
   .then(r => r.json())
   .then(data => {
     const commitDate = new Date(data[0].commit.author.date);
-    const days = Math.floor((Date.now() - commitDate) / 86400000);
-    const rel = days === 0 ? 'today' : days === 1 ? 'yesterday' : `${days} days ago`;
+    const nowUtc = new Date();
+    const diffDays = Math.floor((Date.UTC(nowUtc.getFullYear(), nowUtc.getMonth(), nowUtc.getDate())-Date.UTC(commitDate.getFullYear(), commitDate.getMonth(), commitDate.getDate()))/86400000);
+    const rel = diffDays === 0 ? 'today' : diffDays === 1 ? 'yesterday' : `${diffDays} days ago`;
     document.getElementById('footer-date').textContent = `Updated ${rel}`;
   });
 
