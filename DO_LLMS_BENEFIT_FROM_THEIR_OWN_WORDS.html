@@ -5,110 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Do LLMs Benefit from Their Own Words? — 批注版</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{
-    --navy:#0a1628;
-    --navy-light:#1a2e4a;
-    --paper:#f9f6f0;
-    --text:#2c2417;
-    --muted:#6b5c4a;
-    --hl-yellow:#fff3b0;
-    --hl-yellow-b:#d4a800;
-    --hl-red:#ffd6d6;
-    --hl-red-b:#c0392b;
-    --hl-blue:#d0e8ff;
-    --hl-blue-b:#1a6bb5;
-    --hl-green:#d4f0d4;
-    --hl-green-b:#2a7a2a;
-    --hl-purple:#e8d4f8;
-    --hl-purple-b:#7b2fa0;
-    --card-bg:#ffffff;
-    --border:#e0d8cc;
-  }
-  body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--text);line-height:1.6}
-
-  /* NAV */
-  nav{background:var(--navy);color:#fff;padding:0.75rem 1.5rem;display:flex;flex-wrap:wrap;align-items:center;gap:1rem;position:sticky;top:0;z-index:100}
-  .nav-title{font-size:14px;font-weight:600;flex:1;min-width:200px}
-  .nav-course{font-size:11px;opacity:0.65;font-weight:400}
-  .legend{display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center}
-  .leg{display:flex;align-items:center;gap:4px;font-size:11px;white-space:nowrap}
-  .leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
-
-  /* SECTION NAV */
-  .sec-nav{background:var(--navy-light);display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid rgba(255,255,255,0.1);position:sticky;top:56px;z-index:99}
-  .sec-nav a{color:rgba(255,255,255,0.75);text-decoration:none;font-size:12px;padding:7px 14px;transition:background 0.2s;font-family:'IBM Plex Sans',sans-serif;white-space:nowrap}
-  .sec-nav a:hover{background:rgba(255,255,255,0.12);color:#fff}
-
-  /* MAIN */
-  .main{max-width:1400px;margin:0 auto;padding:1.5rem}
-
-  /* COLUMNS */
-  .two-col{display:grid;grid-template-columns:1fr 380px;gap:2rem;align-items:start}
-  @media(max-width:900px){.two-col{grid-template-columns:1fr}}
-
-  /* PAPER TEXT */
-  .paper-col{font-family:'Lora',serif;font-size:15px;line-height:1.9;color:var(--text)}
-  .section-header{font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin:2rem 0 0.5rem;padding-bottom:0.25rem;border-bottom:1px solid var(--border)}
-  .paper-col h2{font-family:'IBM Plex Sans',sans-serif;font-size:16px;font-weight:600;margin:1.5rem 0 0.5rem;color:var(--navy)}
-  .paper-col h3{font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:600;margin:1.2rem 0 0.4rem;color:var(--navy-light)}
-  .paper-col p{margin-bottom:1rem}
-  .paper-col .authors{font-size:13px;color:var(--muted);margin-bottom:0.25rem;font-style:italic}
-  .paper-col .affil{font-size:12px;color:var(--muted)}
-
-  /* HIGHLIGHTS */
-  .hy{padding:1px 3px;border-radius:3px;font-style:inherit}
-  .hy-y{background:var(--hl-yellow);border-bottom:1.5px solid var(--hl-yellow-b)}
-  .hy-r{background:var(--hl-red);border-bottom:1.5px solid var(--hl-red-b)}
-  .hy-b{background:var(--hl-blue);border-bottom:1.5px solid var(--hl-blue-b)}
-  .hy-g{background:var(--hl-green);border-bottom:1.5px solid var(--hl-green-b)}
-  .hy-p{background:var(--hl-purple);border-bottom:1.5px solid var(--hl-purple-b)}
-
-  /* ANNOTATION CARDS */
-  .ann-col{display:flex;flex-direction:column;gap:1.2rem}
-  .ann-card{background:var(--card-bg);border:0.5px solid var(--border);border-radius:10px;padding:0.9rem 1rem;border-left:4px solid var(--border)}
-  .ann-card.col-y{border-left-color:var(--hl-yellow-b)}
-  .ann-card.col-r{border-left-color:var(--hl-red-b)}
-  .ann-card.col-b{border-left-color:var(--hl-blue-b)}
-  .ann-card.col-g{border-left-color:var(--hl-green-b)}
-  .ann-card.col-p{border-left-color:var(--hl-purple-b)}
-  .ann-card.col-n{border-left-color:#888}
-  .ann-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.5rem}
-  .ann-func{font-size:12px;font-weight:600;margin-bottom:0.3rem;color:var(--navy)}
-  .ann-role{font-size:12px;color:#444;margin-bottom:0.35rem}
-  .ann-note{font-size:11.5px;color:#666;line-height:1.5;padding-top:0.35rem;border-top:0.5px solid var(--border)}
-  .ann-badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:4px;font-weight:600;margin-right:4px;margin-bottom:4px}
-  .badge-func{background:#e8f0fe;color:#1a3a8a}
-  .badge-warn{background:#fff3e0;color:#8a4a00}
-  .badge-str{background:#e8f8e8;color:#1a5c1a}
-
-  /* SECTION WRAPPER */
-  .sec-block{margin-bottom:2.5rem;scroll-margin-top:90px}
-
-  /* ABSTRACT BOX */
-  .abstract-box{background:#eef4fb;border-left:4px solid #1a6bb5;padding:1rem 1.2rem;border-radius:0 8px 8px 0;margin-bottom:1.2rem}
-  .abstract-box p{font-family:'Lora',serif;font-size:14px;line-height:1.8;margin-bottom:0.8rem}
-  .abstract-box p:last-child{margin-bottom:0}
-
-  /* FOOTER */
-  .footer{background:var(--navy);color:#fff;padding:2rem 1.5rem;margin-top:3rem}
-  .footer-title{font-size:16px;font-weight:600;margin-bottom:1.2rem;border-bottom:1px solid rgba(255,255,255,0.2);padding-bottom:0.5rem}
-  .skeleton{display:flex;gap:0.5rem;align-items:stretch;flex-wrap:wrap;margin-bottom:1.5rem}
-  .sk-block{background:rgba(255,255,255,0.1);border-radius:6px;padding:0.6rem 0.9rem;font-size:12px;color:rgba(255,255,255,0.85);flex:1;min-width:120px;text-align:center;position:relative}
-  .sk-block::after{content:'→';position:absolute;right:-0.7rem;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.4);font-size:14px}
-  .sk-block:last-child::after{display:none}
-  .sk-label{font-size:10px;opacity:0.55;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.05em}
-  .footer-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1rem}
-  @media(max-width:700px){.footer-grid{grid-template-columns:1fr}.sk-block::after{display:none}}
-  .fcard{background:rgba(255,255,255,0.07);border-radius:8px;padding:0.8rem 1rem;font-size:12.5px;color:rgba(255,255,255,0.8);line-height:1.5}
-  .fcard-title{font-size:11px;text-transform:uppercase;letter-spacing:0.06em;opacity:0.5;margin-bottom:0.4rem;font-weight:600}
-  .core-claim{background:rgba(255,255,255,0.08);border-left:3px solid #f5c842;border-radius:0 6px 6px 0;padding:0.8rem 1rem;font-size:13px;color:rgba(255,255,255,0.9);font-style:italic;margin-bottom:1.2rem}
-</style>
+<link rel="stylesheet" href="paper-theme.css">
 </head>
 <body>
 
-<nav>
+<nav class="default-nav">
   <div class="nav-title">
     Do LLMs Benefit from Their Own Words?
     <div class="nav-course">学术论文批注版 · 自然语言处理专题阅读</div>
@@ -122,7 +23,7 @@
   </div>
 </nav>
 
-<div class="sec-nav">
+<div class="sec-nav legacy-top">
   <a href="#abstract">摘要</a>
   <a href="#intro">引言</a>
   <a href="#setup">实验设计</a>
