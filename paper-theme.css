@@ -86,32 +86,6 @@
   #topnav .dot-concede { background: #20a050; }
   #topnav .dot-method { background: #9040c0; }
 
-  @media (max-width: 820px) {
-    #topnav { position: relative; padding: 10px 16px; gap: 8px; } /* unstick topnav so it scrolls out of view naturally */
-    #topnav .nav-title-old { font-size: 13px; width: 100%; white-space: normal; }
-    #topnav .nav-title-old small { display: none; } /* hide subtitle */
-    #topnav .legend-old { width: 100%; margin-left: 0; justify-content: flex-start; gap: 10px; margin-top: 4px; }
-    .sec-nav { 
-      position: sticky; /* snap to top instead */
-      top: -1px; /* stick right to the top of screen */
-      z-index: 1000;
-      flex-wrap: nowrap; /* keep links on single line */
-      overflow-x: auto; /* allow horizontal scrolling */
-      overflow-y: hidden;
-      -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
-      scrollbar-width: none; /* hide scrollbar on Firefox */
-    }
-    .sec-nav::-webkit-scrollbar { display: none; } /* hide scrollbar on Chrome/Safari */
-    .sec-nav a { flex-shrink: 0; white-space: nowrap; } /* prevent link text from being squished */
-  }
-
-  @media (max-width: 500px) {
-    #topnav .legend-label { font-size: 9px; letter-spacing: -0.02em; } /* scale text down instead of hiding */
-    #topnav .legend-item { gap: 3px; } /* tighter gap between dot and text */
-    #topnav .legend-old { gap: 8px 10px; } /* reduce gap between items, allow clean wrap */
-    #topnav .legend-dot { width: 10px; height: 10px; } /* shrink dot slightly for proportion */
-  }
-
   /* SECTION NAV */
   .sec-nav{background:var(--navy-light);display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid rgba(255,255,255,0.1);position:sticky;top:60px;z-index:99}
   .sec-nav.legacy-top{top:56px;} /* fallback height if using generic nav */
@@ -182,3 +156,31 @@
   .fcard{background:rgba(255,255,255,0.07);border-radius:8px;padding:0.8rem 1rem;font-size:12.5px;color:rgba(255,255,255,0.8);line-height:1.5}
   .fcard-title{font-size:11px;text-transform:uppercase;letter-spacing:0.06em;opacity:0.5;margin-bottom:0.4rem;font-weight:600}
   .core-claim{background:rgba(255,255,255,0.08);border-left:3px solid #f5c842;border-radius:0 6px 6px 0;padding:0.8rem 1rem;font-size:13px;color:rgba(255,255,255,0.9);font-style:italic;margin-bottom:1.2rem}
+
+  /* MOBILE OPTIMIZATIONS (Moved to bottom for proper overriding) */
+  @media (max-width: 820px) {
+    #topnav { position: relative; padding: 10px 16px; gap: 8px; } /* unstick topnav so it scrolls out of view naturally */
+    #topnav .nav-title-old { font-size: 13px; width: 100%; white-space: normal; }
+    #topnav .nav-title-old small { display: none; } /* hide subtitle */
+    #topnav .legend-old { width: 100%; margin-left: 0; justify-content: flex-start; gap: 10px; margin-top: 4px; }
+    
+    .sec-nav { 
+      position: sticky; /* snap to top instead */
+      top: 0; /* stick right to the top of screen */
+      z-index: 1000;
+      flex-wrap: nowrap; /* keep links on single line */
+      overflow-x: auto; /* allow horizontal scrolling */
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
+      scrollbar-width: none; /* hide scrollbar on Firefox */
+    }
+    .sec-nav::-webkit-scrollbar { display: none; } /* hide scrollbar on Chrome/Safari */
+    .sec-nav a { flex-shrink: 0; white-space: nowrap; } /* prevent link text from being squished */
+  }
+
+  @media (max-width: 500px) {
+    #topnav .legend-label { font-size: 9px; letter-spacing: -0.02em; } /* scale text down instead of hiding */
+    #topnav .legend-item { gap: 3px; } /* tighter gap between dot and text */
+    #topnav .legend-old { gap: 8px 10px; } /* reduce gap between items, allow clean wrap */
+    #topnav .legend-dot { width: 10px; height: 10px; } /* shrink dot slightly for proportion */
+  }
