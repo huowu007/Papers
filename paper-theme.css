@@ -91,7 +91,15 @@
     #topnav .nav-title-old { font-size: 13px; width: 100%; white-space: normal; }
     #topnav .nav-title-old small { display: none; } /* hide subtitle */
     #topnav .legend-old { width: 100%; margin-left: 0; justify-content: flex-start; gap: 10px; margin-top: 4px; }
-    .sec-nav { position: static; } /* unstick secondary nav to save vertical space */
+    .sec-nav { 
+      position: static; /* unstick secondary nav to save vertical space */
+      flex-wrap: nowrap; /* keep links on single line */
+      overflow-x: auto; /* allow horizontal scrolling */
+      -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
+      scrollbar-width: none; /* hide scrollbar on Firefox */
+    }
+    .sec-nav::-webkit-scrollbar { display: none; } /* hide scrollbar on Chrome/Safari */
+    .sec-nav a { flex-shrink: 0; } /* prevent link text from being squished */
   }
 
   @media (max-width: 500px) {
