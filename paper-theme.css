@@ -87,19 +87,22 @@
   #topnav .dot-method { background: #9040c0; }
 
   @media (max-width: 820px) {
-    #topnav { padding: 10px 16px; gap: 8px; }
+    #topnav { position: relative; padding: 10px 16px; gap: 8px; } /* unstick topnav so it scrolls out of view naturally */
     #topnav .nav-title-old { font-size: 13px; width: 100%; white-space: normal; }
     #topnav .nav-title-old small { display: none; } /* hide subtitle */
     #topnav .legend-old { width: 100%; margin-left: 0; justify-content: flex-start; gap: 10px; margin-top: 4px; }
     .sec-nav { 
-      position: static; /* unstick secondary nav to save vertical space */
+      position: sticky; /* snap to top instead */
+      top: -1px; /* stick right to the top of screen */
+      z-index: 1000;
       flex-wrap: nowrap; /* keep links on single line */
       overflow-x: auto; /* allow horizontal scrolling */
+      overflow-y: hidden;
       -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
       scrollbar-width: none; /* hide scrollbar on Firefox */
     }
     .sec-nav::-webkit-scrollbar { display: none; } /* hide scrollbar on Chrome/Safari */
-    .sec-nav a { flex-shrink: 0; } /* prevent link text from being squished */
+    .sec-nav a { flex-shrink: 0; white-space: nowrap; } /* prevent link text from being squished */
   }
 
   @media (max-width: 500px) {
