@@ -95,8 +95,10 @@
   }
 
   @media (max-width: 500px) {
-    #topnav .legend-label { display: none; } /* only show legend dots on very small screens */
-    #topnav .legend-old { gap: 14px; }
+    #topnav .legend-label { font-size: 9px; letter-spacing: -0.02em; } /* scale text down instead of hiding */
+    #topnav .legend-item { gap: 3px; } /* tighter gap between dot and text */
+    #topnav .legend-old { gap: 8px 10px; } /* reduce gap between items, allow clean wrap */
+    #topnav .legend-dot { width: 10px; height: 10px; } /* shrink dot slightly for proportion */
   }
 
   /* SECTION NAV */
