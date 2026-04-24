@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HankMai Papers</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3EHM%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f9f6f0;
+    --surface: #f7f7f5;
+    --border: #e8e8e4;
+    --text: #111111;
+    --muted: #6b6b67;
+    --accent: #1a1a1a;
+    --tag-bg: #f0f0ec;
+    --hover-line: #111111;
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141412;
+      --surface: #1c1c1a;
+      --border: #2a2a26;
+      --text: #e8e5de;
+      --muted: #7a7a74;
+      --accent: #e8e5de;
+      --tag-bg: #222220;
+      --hover-line: #e8e5de;
+    }
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 300;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  header {
+    padding: 80px 40px 60px;
+    border-bottom: 1px solid var(--border);
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 52px;
+  }
+
+  .site-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid transparent;
+    padding-bottom: 3px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .nav-links a:hover {
+    color: var(--text);
+    border-color: var(--hover-line);
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  .header-desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 480px;
+  }
+
+  .controls {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 40px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .count-label {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  #search {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--text);
+    width: clamp(160px, 30vw, 220px);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  #search::placeholder { color: var(--muted); }
+  #search:focus { border-color: var(--accent); }
+
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 40px 120px;
+  }
+
+  #paper-list {
+    margin-top: 24px;
+  }
+
+  .paper-item {
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    align-items: start;
+    gap: 0 20px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    transition: background 0.15s;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeUp 0.35s ease forwards;
+  }
+
+  .paper-item::before {
+    content: '';
+    position: absolute;
+    left: -40px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--hover-line);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.2s ease;
+  }
+
+  .paper-item:hover::before { transform: scaleY(1); }
+
+  .paper-num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    padding-top: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .paper-title {
+    font-family: var(--serif);
+    font-size: 1.25rem;
+    font-weight: 400;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    transition: color 0.15s;
+  }
+
+  .paper-item:hover .paper-title {
+    color: var(--accent);
+  }
+
+  .paper-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .paper-tag {
+    background: var(--tag-bg);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+
+  .paper-arrow {
+    font-size: 18px;
+    color: var(--muted);
+    padding-top: 2px;
+    transition: transform 0.2s, color 0.2s;
+  }
+
+  .paper-item:hover .paper-arrow {
+    transform: translate(3px, -2px);
+    color: var(--accent);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 80px 0;
+    color: var(--muted);
+    font-size: 14px;
+    display: none;
+  }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 40px;
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-note {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .footer-note a {
+    color: var(--muted);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    header, .controls, main, footer {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    header {
+      padding-top: 40px;
+      padding-bottom: 40px;
+    }
+
+    nav {
+      align-items: flex-start;
+      flex-direction: column;
+      margin-bottom: 40px;
+    }
+
+    .paper-item {
+      grid-template-columns: 36px 1fr auto;
+      gap: 0 12px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav aria-label="Primary">
+    <a class="site-label" href="./index.html">HankMai</a>
+    <div class="nav-links">
+      <a href="./index.html#projects">Projects</a>
+      <a href="./index.html#articles">Articles</a>
+      <a href="./papers.html">Papers</a>
+    </div>
+  </nav>
+
+  <p class="site-label">Research Index</p>
+  <h1>Reading <em>&amp;</em> Papers</h1>
+  <p class="header-desc">I'm HankMai. This is the list of papers I am currently reading.</p>
+</header>
+
+<div class="controls">
+  <span class="count-label" id="count-label">0 papers</span>
+  <input type="text" id="search" placeholder="Search titles..." autocomplete="off">
+</div>
+
+<main>
+  <div id="paper-list"></div>
+  <div class="empty-state" id="empty-state">No papers match your search.</div>
+</main>
+
+<footer>
+  <span class="footer-note">Hosted on <a href="https://pages.github.com" target="_blank" rel="noreferrer">GitHub</a></span>
+  <span class="footer-note" id="footer-date"></span>
+</footer>
+
+<script>
+  const papers = [
+    {
+      file: "DO_LLMS_BENEFIT_FROM_THEIR_OWN_WORDS.html",
+      title: "Do LLMs Benefit from Their Own Words?",
+      tags: ["LLM", "Context Pollution"]
+    },
+    {
+      file: "Golden_Eggs_Annotated.html",
+      title: "Golden Eggs and Hyperbolic Discounting",
+      tags: ["Behavioral economics", "Compounding"]
+    }
+  ];
+
+  const list = document.getElementById('paper-list');
+  const countLabel = document.getElementById('count-label');
+  const emptyState = document.getElementById('empty-state');
+  const searchInput = document.getElementById('search');
+
+  fetch('https://api.github.com/repos/huowu007/Papers/commits?path=papers.html&per_page=1')
+    .then(response => response.ok ? response.json() : Promise.reject())
+    .then(data => {
+      if (!data.length) return;
+      const commitDate = new Date(data[0].commit.author.date);
+      const nowUtc = new Date();
+      const diffDays = Math.floor((Date.UTC(nowUtc.getFullYear(), nowUtc.getMonth(), nowUtc.getDate()) - Date.UTC(commitDate.getFullYear(), commitDate.getMonth(), commitDate.getDate())) / 86400000);
+      const rel = diffDays === 0 ? 'today' : diffDays === 1 ? 'yesterday' : `${diffDays} days ago`;
+      document.getElementById('footer-date').textContent = `Updated ${rel}`;
+    })
+    .catch(() => {
+      document.getElementById('footer-date').textContent = `Updated ${new Date().getFullYear()}`;
+    });
+
+  function render(items) {
+    list.innerHTML = '';
+    emptyState.style.display = items.length === 0 ? 'block' : 'none';
+
+    items.forEach((paper, index) => {
+      const item = document.createElement('a');
+      item.className = 'paper-item';
+      item.href = paper.file;
+      item.style.animationDelay = (index * 40) + 'ms';
+
+      const tags = (paper.tags || []).map(tag =>
+        `<span class="paper-tag">${tag}</span>`
+      ).join('');
+
+      item.innerHTML = `
+        <span class="paper-num">${String(index + 1).padStart(2, '0')}</span>
+        <div class="paper-body">
+          <div class="paper-title">${paper.title}</div>
+          <div class="paper-meta">${tags}</div>
+        </div>
+        <span class="paper-arrow" aria-hidden="true">→</span>
+      `;
+
+      list.appendChild(item);
+    });
+
+    countLabel.textContent = `${items.length} paper${items.length !== 1 ? 's' : ''}`;
+  }
+
+  render(papers);
+
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.trim().toLowerCase();
+    if (!query) {
+      render(papers);
+      return;
+    }
+
+    const filtered = papers.filter(paper =>
+      paper.title.toLowerCase().includes(query) ||
+      paper.file.toLowerCase().includes(query) ||
+      (paper.tags || []).some(tag => tag.toLowerCase().includes(query))
+    );
+
+    render(filtered);
+  });
+</script>
+</body>
+</html>
