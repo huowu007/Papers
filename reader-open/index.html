@@ -124,6 +124,16 @@
         return `${readerUrl}${separator}bridge_nonce=${Date.now()}`;
       };
 
+      const localBridgeUrl = readerUrl => {
+        const url = new URL('http://127.0.0.1:49579/open');
+        url.searchParams.set('u', btoa(unescape(encodeURIComponent(readerUrl)))
+          .replace(/\+/g, '-')
+          .replace(/\//g, '_')
+          .replace(/=+$/g, ''));
+        url.searchParams.set('nonce', String(Date.now()));
+        return url.toString();
+      };
+
       const readerUrl = getReaderUrl();
 
       if (!readerUrl || !readerUrl.startsWith('reader://')) {
@@ -131,23 +141,69 @@
         title.textContent = 'Reader link is missing';
         message.textContent = 'This page needs a Reader deep link in the u query parameter.';
       } else {
-        const openReader = () => {
+        let protocolFallbackStarted = false;
+        let warmOpenStarted = false;
+
+        const closeBridgePage = () => {
+          title.textContent = 'Reader is open';
+          message.textContent = 'You can return to Tana.';
+          window.setTimeout(() => {
+            window.close();
+            if (document.visibilityState !== 'hidden' && window.history.length > 1) {
+              window.history.back();
+            }
+          }, 220);
+        };
+
+        const openWarmReader = async () => {
+          const controller = new AbortController();
+          const timeout = window.setTimeout(() => controller.abort(), 520);
+          try {
+            const response = await fetch(localBridgeUrl(readerUrl), {
+              method: 'GET',
+              mode: 'cors',
+              cache: 'no-store',
+              signal: controller.signal
+            });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            warmOpenStarted = true;
+            closeBridgePage();
+            return true;
+          } catch {
+            return false;
+          } finally {
+            window.clearTimeout(timeout);
+          }
+        };
+
+        const openColdReader = () => {
+          protocolFallbackStarted = true;
           const target = withNonce(readerUrl);
           manualLink.href = target;
           window.location.href = target;
         };
 
+        const openReader = async () => {
+          if (warmOpenStarted) {
+            closeBridgePage();
+            return;
+          }
+          if (await openWarmReader()) return;
+          if (!protocolFallbackStarted) openColdReader();
+        };
+
         manualLink.addEventListener('click', event => {
           event.preventDefault();
-          openReader();
+          protocolFallbackStarted = false;
+          void openReader();
         });
 
-        window.addEventListener('pageshow', openReader);
-        window.addEventListener('focus', openReader);
+        window.addEventListener('pageshow', () => void openReader());
+        window.addEventListener('focus', () => void openReader());
         document.addEventListener('visibilitychange', () => {
-          if (!document.hidden) openReader();
+          if (!document.hidden) void openReader();
         });
-        window.setTimeout(openReader, 80);
+        window.setTimeout(() => void openReader(), 80);
       }
     </script>
   </body>
