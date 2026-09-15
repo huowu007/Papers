@@ -110,6 +110,11 @@
     font-style: italic;
     color: var(--muted);
   }
+  .hero-title {
+    font-size: clamp(3rem, 8vw, 5.4rem);
+    letter-spacing: -0.025em;
+  }
+
 
   .hero-soft {
     color: var(--muted);
@@ -126,6 +131,19 @@
     line-height: 1.8;
     color: var(--muted);
     max-width: 680px;
+  }
+
+  .hero-bio {
+    max-width: 720px;
+  }
+
+  .hero-bio p + p {
+    margin-top: 16px;
+  }
+
+  .hero-bio strong {
+    color: var(--text);
+    font-weight: 500;
   }
 
   .social-strip {
